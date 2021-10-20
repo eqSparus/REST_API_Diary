@@ -1,0 +1,39 @@
+<configuration scan="true" debug="false">
+
+    <appender name="print_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="test_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%thread] %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file_error"
+              class="ch.qos.logback.core.FileAppender">
+        <file>src/main/resources/logback.log</file>
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [thread] %-5level %logger{46} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="print" level="info" additivity="false">
+        <appender-ref ref="print_console"/>
+    </logger>
+
+    <logger name="test" level="debug" additivity="false">
+        <appender-ref ref="test_console"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="test_console" />
+        <appender-ref ref="file_error"/>
+    </root>
+</configuration>

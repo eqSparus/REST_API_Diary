@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'maven-publish'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+}
+
+group 'comdiary'
+version '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    //Test
+    junitVersion = '5.8.0'
+    //Different
+    lombockVersion = '1.18.20'
+    jacksonVersion = '2.12.5'
+    //Web
+    springVersion = '5.3.9'
+    springSecurity = '5.5.2'
+    servletVersion = '4.0.1'
+    javaxAnnotationVersion = '1.3.2'
+    jsonWebToken = '0.9.1'
+    jakartaXmlVersion = '2.3.2'
+    javaMailVersion = '1.4.7'
+    //JDBC
+    postgreSQLVersion = '42.2.23'
+    //Logging
+    slf4jVersion = '1.7.32'
+    logbackVersion = '1.2.6'
+}
+
+dependencies {
+    //Test stack start
+    //JUnit tests
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+    //Test stack end
+
+
+    //Different libraries start
+    //Lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombockVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombockVersion
+    //Jackson databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+    //Different libraries end
+
+
+    //Web stack start
+    //Spring MVC
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+    //Spring Web
+    implementation group: 'org.springframework', name: 'spring-web', version: springVersion
+    //Sprint JDBC
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
+    //Postgre SQL JDBC
+    implementation group: 'org.postgresql', name: 'postgresql', version: postgreSQLVersion
+    //Servlet API
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: servletVersion
+    //Annotation API
+    implementation group: 'javax.annotation', name: 'javax.annotation-api', version: javaxAnnotationVersion
+    //Spring Security Core
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: springSecurity
+    //Spring Security Config
+    implementation group: 'org.springframework.security', name: 'spring-security-config', version: springSecurity
+    //Spring Security Web
+    implementation group: 'org.springframework.security', name: 'spring-security-web', version: springSecurity
+    //JSON Web Token
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: jsonWebToken
+    //Jakarta xml bind
+    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: jakartaXmlVersion
+    //JavaMail API
+    implementation group: 'javax.mail', name: 'mail', version: javaMailVersion
+    //Web stack end
+
+
+    //Logging start
+    //SLF4J
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
+    //Logback
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+    //Logging end
+}
+
+test {
+    useJUnitPlatform()
+}
