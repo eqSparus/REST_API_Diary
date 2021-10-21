@@ -32,7 +32,7 @@ ext {
     javaxAnnotationVersion = '1.3.2'
     jsonWebToken = '0.9.1'
     jakartaXmlVersion = '2.3.2'
-    javaMailVersion = '1.4.7'
+    mailVersion =  '2.0.1'
     //JDBC
     postgreSQLVersion = '42.2.23'
     //Logging
@@ -79,8 +79,8 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: jsonWebToken
     //Jakarta xml bind
     implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: jakartaXmlVersion
-    //JavaMail API
-    implementation group: 'javax.mail', name: 'mail', version: javaMailVersion
+    //Jakarta Mail API
+    implementation group: 'com.sun.mail', name: 'jakarta.mail', version: mailVersion
     //Web stack end
 
 
