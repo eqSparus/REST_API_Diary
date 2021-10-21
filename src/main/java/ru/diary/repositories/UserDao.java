@@ -10,4 +10,6 @@ public interface UserDao {
 
     Optional<User> findUserByEmail(String email);
 
+    void updateStatusActive(String email);
+
 }

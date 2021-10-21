@@ -59,7 +59,7 @@ public class UserAuthService implements UserService {
                     .email(user.getEmail())
                     .password(encoder.encode(user.getPassword()))
                     .role(Role.USER)
-                    .status(Status.ACTIVE)
+                    .status(Status.IN_BASE)
                     .build();
 
             userDao.create(newUser);

@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import ru.diary.models.Role;
 
 import javax.servlet.Filter;
 
@@ -40,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        String urlStop = environment.getProperty("path.stop");
+        String urlConfirm = environment.getProperty("path.confirm");
         String urlLogin = environment.getProperty("path.login");
         String urlRegistration = environment.getProperty("path.registration");
 
@@ -48,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(filter, BasicAuthenticationFilter.class)
                 .authenticationProvider(provider)
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, urlStop).hasRole(Role.USER.name())
-                .antMatchers(HttpMethod.POST, urlLogin, urlRegistration).permitAll();
+                .antMatchers(urlLogin, urlRegistration, urlConfirm).permitAll();
 
         http.csrf().disable();
     }

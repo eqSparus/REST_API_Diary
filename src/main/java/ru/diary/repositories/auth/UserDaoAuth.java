@@ -32,6 +32,10 @@ public class UserDaoAuth implements UserDao {
     static String SQL_FIND_USER_BY_LOGIN =
             "SELECT * FROM users WHERE email = ?";
 
+    //language=SQL
+    static String SQL_UPDATE_STATUS_USER =
+            "UPDATE users SET status = ? WHERE email = ?";
+
     @Override
     public void create(User user) {
         jdbcTemplate.update(SQL_INSERT_USER,
@@ -46,6 +50,11 @@ public class UserDaoAuth implements UserDao {
     @Override
     public Optional<User> findUserByEmail(String email) {
         return jdbcTemplate.queryForStream(SQL_FIND_USER_BY_LOGIN, userMapper, email).findAny();
+    }
+
+    @Override
+    public void updateStatusActive(String email) {
+        jdbcTemplate.update(SQL_UPDATE_STATUS_USER, Status.ACTIVE.name(), email);
     }
 
     RowMapper<User> userMapper = (rs, rowNum) -> User.builder()

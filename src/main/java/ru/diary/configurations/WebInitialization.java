@@ -6,7 +6,7 @@ import ru.diary.configurations.security.config.SecurityConfig;
 public class WebInitialization extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{DatabaseConfig.class, SecurityConfig.class};
+        return new Class[]{DatabaseConfig.class, SecurityConfig.class, ModelAndMailConfig.class};
     }
 
     @Override
