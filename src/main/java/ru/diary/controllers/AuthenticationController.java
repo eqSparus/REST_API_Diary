@@ -43,20 +43,26 @@ public class AuthenticationController {
             ));
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "message", "Неправильный логин или пароль"
+        ));
     }
 
     //TODO Перенести emailService
-    @PostMapping(path = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> registrationUser(
+    public ResponseEntity<Map<String, String>> registrationUser(
             @RequestBody UserAuth user
     ) {
         if (service.registrationUser(user)) {
             emailService.emailActiveMail(user.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body("");
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "message", "Пользователь создан"
+            ));
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "message", "Такой пользователь уже существует"
+        ));
     }
 }

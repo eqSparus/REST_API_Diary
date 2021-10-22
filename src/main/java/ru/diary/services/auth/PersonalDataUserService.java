@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class DataUserService implements DataService {
+public class PersonalDataUserService implements DataService {
 
     DataDao dataDao;
     UserDao userDao;
@@ -23,7 +23,7 @@ public class DataUserService implements DataService {
 
 
     @Autowired
-    public DataUserService(DataDao dataDao, UserDao userDao, PasswordEncoder passwordEncoder) {
+    public PersonalDataUserService(DataDao dataDao, UserDao userDao, PasswordEncoder passwordEncoder) {
         this.dataDao = dataDao;
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.Filter;
@@ -23,15 +24,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     Environment environment;
     Filter filter;
+    Filter encodingFilter;
     AuthenticationProvider provider;
+
 
     @Autowired
     public SecurityConfig(
             Environment environment,
             @Qualifier("tokenAuthenticationFilter") Filter filter,
+            @Qualifier("encodingFilterConfig") Filter encodingFilter,
             AuthenticationProvider provider) {
         this.environment = environment;
         this.filter = filter;
+        this.encodingFilter = encodingFilter;
         this.provider = provider;
     }
 
@@ -41,12 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         String urlConfirm = environment.getProperty("path.confirm");
         String urlLogin = environment.getProperty("path.login");
         String urlRegistration = environment.getProperty("path.registration");
+        String urlResetPass = environment.getProperty("path.reset_pass");
+        String urlUpdatePass = environment.getProperty("path.update_pass");
 
         http
+                .addFilterBefore(encodingFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(filter, BasicAuthenticationFilter.class)
                 .authenticationProvider(provider)
                 .authorizeRequests()
-                .antMatchers(urlLogin, urlRegistration, urlConfirm).permitAll();
+                .antMatchers(urlUpdatePass).authenticated()
+                .antMatchers(urlLogin, urlRegistration, urlConfirm, urlResetPass).permitAll();
 
         http.csrf().disable();
     }

@@ -3,6 +3,7 @@ package ru.diary.configurations.security.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Setter
 @Component
 public class TokenCreator {
 
@@ -22,6 +24,7 @@ public class TokenCreator {
     @Value("${token.time}")
     Long time;
 
+    //TODO изменить время удаления токена
     @PostConstruct
     protected void init() {
         key = Base64.getEncoder().encodeToString(key.getBytes());

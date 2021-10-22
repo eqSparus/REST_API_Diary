@@ -31,12 +31,13 @@ public class EmailAuthService implements EmailService {
                 .queryParam("email", "{email}")
                 .build();
 
-        final String subject = "Confirmation of address";
+        final String subject = "Подтверждения адреса";
 
         final String text = """
-                Hello!
-                Please confirm your email address by clicking on the link.
-                If you haven't registered just ignore these are messages.
+                Здравствуйте!
+                Вы зарегистрировались на сайте Diary пожалуйста перейдите по
+                ссылке ниже для подтверждения электроного адреса
+                если это были не вы просто проигнорируйте это сообщения
                 """ + uriComponents.expand(email).toUri();
 
         try {

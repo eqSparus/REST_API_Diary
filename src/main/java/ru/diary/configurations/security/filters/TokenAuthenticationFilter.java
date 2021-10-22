@@ -1,4 +1,4 @@
-package ru.diary.configurations.security.jwt;
+package ru.diary.configurations.security.filters;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.diary.configurations.security.jwt.TokenAuth;
+import ru.diary.configurations.security.jwt.TokenCreator;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

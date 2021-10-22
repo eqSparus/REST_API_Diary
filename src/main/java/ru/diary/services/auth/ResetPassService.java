@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.diary.configurations.security.jwt.TokenCreator;
 import ru.diary.mail.MailingLetters;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -13,24 +14,31 @@ import ru.diary.mail.MailingLetters;
 public class ResetPassService {
 
     MailingLetters mailingLetters;
+    TokenCreator creator;
 
     @Autowired
-    public ResetPassService(MailingLetters mailingLetters) {
+    public ResetPassService(MailingLetters mailingLetters, TokenCreator creator) {
         this.mailingLetters = mailingLetters;
+        this.creator = creator;
     }
 
+    //TODO Изменить время setTime()
     public void resetPassword(String email) {
+
+        creator.setTime(300L);
+        String token = creator.createToken(email);
+
         var uriComponents = UriComponentsBuilder
                 .fromUriString("http://localhost:3000/recover/{token}")
                 .build();
 
-        final String subject = "Password reset";
+        final String subject = "Сброс пароля";
 
         final String text = """
-                Hello!
-                To reset your password, follow the link below. If you weren going to
-                reset password just ignore this message
-                """ + uriComponents.expand(email).toUri();
+                Здравствуйте!
+                Чтобы сбросить пароль, перейдите по ссылке ниже.
+                Если вы не собирались сбрасывать пароль, просто проигнорируйте это сообщение.
+                """ + uriComponents.expand(token).toUri();
 
         try {
             mailingLetters.sendingMessageEmail(email, subject, text);

@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.diary.configurations.security.jwt.TokenCreator;
+import ru.diary.models.Status;
 import ru.diary.models.UserAuth;
 import ru.diary.services.DataService;
 import ru.diary.services.EmailService;
 import ru.diary.services.auth.ResetPassService;
 
 import java.net.URI;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST, maxAge = 3600)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,12 +25,14 @@ public class EmailController {
     EmailService emailService;
     DataService dataService;
     ResetPassService passService;
+    TokenCreator creator;
 
     @Autowired
-    public EmailController(EmailService emailService, DataService dataService, ResetPassService passService) {
+    public EmailController(EmailService emailService, DataService dataService, ResetPassService passService, TokenCreator creator) {
         this.emailService = emailService;
         this.dataService = dataService;
         this.passService = passService;
+        this.creator = creator;
     }
 
     @GetMapping(path = "/confirm")
@@ -45,25 +50,33 @@ public class EmailController {
 
     @PostMapping(path = "/reset_pass", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPassword(
+    public ResponseEntity<Map<String, String>> resetPassword(
             @RequestBody UserAuth userAuth
     ) {
         var user = dataService.getUserByEmail(userAuth.getEmail());
-        if (user.isPresent()) {
+        if (user.isPresent() && user.get().getStatus().equals(Status.ACTIVE)) {
             passService.resetPassword(userAuth.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body("");
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                    "message", "Проверьте свою почту"
+            ));
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "message","Нет такого email адреса или он не активен"
+        ));
     }
 
     @PostMapping(path = "/update_pass", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(code = HttpStatus.OK)
-    public String updatePassword(
+    public Map<String, String> updatePassword(
+            @RequestHeader(name = "Authorization") String token,
             @RequestBody UserAuth user
     ) {
+        user.setEmail(creator.getLogin(token));
         dataService.updatePassword(user);
-        return "";
+        return Map.of(
+                "message", "Пароль изменен"
+        );
     }
 
 
