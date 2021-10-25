@@ -8,24 +8,19 @@ import org.springframework.stereotype.Service;
 import ru.diary.models.User;
 import ru.diary.models.UserAuth;
 import ru.diary.repositories.DataDao;
-import ru.diary.repositories.UserDao;
 import ru.diary.services.DataService;
-
-import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class PersonalDataUserService implements DataService {
 
     DataDao dataDao;
-    UserDao userDao;
     PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public PersonalDataUserService(DataDao dataDao, UserDao userDao, PasswordEncoder passwordEncoder) {
+    public PersonalDataUserService(DataDao dataDao, PasswordEncoder passwordEncoder) {
         this.dataDao = dataDao;
-        this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -50,11 +45,6 @@ public class PersonalDataUserService implements DataService {
                 .build();
 
         dataDao.updateName(newDateUsed);
-    }
-
-    @Override
-    public Optional<User> getUserByEmail(String email) {
-        return userDao.findUserByEmail(email);
     }
 
 

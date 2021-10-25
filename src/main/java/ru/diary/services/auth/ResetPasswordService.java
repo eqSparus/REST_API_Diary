@@ -8,33 +8,48 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.diary.configurations.security.jwt.TokenCreator;
 import ru.diary.mail.MailingLetters;
+import ru.diary.models.Status;
+import ru.diary.repositories.UserDao;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class ResetPassService {
+public class ResetPasswordService {
 
+    private static final long TIME_RESET = 300L;
+    UserDao userDao;
     MailingLetters mailingLetters;
     TokenCreator creator;
 
     @Autowired
-    public ResetPassService(MailingLetters mailingLetters, TokenCreator creator) {
+    public ResetPasswordService(UserDao userDao, MailingLetters mailingLetters, TokenCreator creator) {
+        this.userDao = userDao;
         this.mailingLetters = mailingLetters;
         this.creator = creator;
     }
 
-    //TODO Изменить время setTime()
-    public void resetPassword(String email) {
+    public boolean resetPassword(String email) {
+        var user = userDao.findUserByEmail(email);
 
-        creator.setTime(300L);
-        String token = creator.createToken(email);
+        if (user.isPresent() && user.get().getStatus().equals(Status.ACTIVE)) {
+            recoverPasswordEmail(email);
+            return true;
+        }
+        return false;
+    }
+
+    //TODO Изменить время setTime()
+    private void recoverPasswordEmail(String email) {
+
+        creator.setTime(TIME_RESET);
+        var token = creator.createToken(email);
 
         var uriComponents = UriComponentsBuilder
                 .fromUriString("http://localhost:3000/recover/{token}")
                 .build();
 
-        final String subject = "Сброс пароля";
+        final var subject = "Сброс пароля";
 
-        final String text = """
+        final var text = """
                 Здравствуйте!
                 Чтобы сбросить пароль, перейдите по ссылке ниже.
                 Если вы не собирались сбрасывать пароль, просто проигнорируйте это сообщение.
@@ -46,5 +61,4 @@ public class ResetPassService {
             e.printStackTrace();
         }
     }
-
 }

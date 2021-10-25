@@ -8,11 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.Status;
 import ru.diary.models.UserAuth;
 import ru.diary.services.DataService;
 import ru.diary.services.EmailService;
-import ru.diary.services.auth.ResetPassService;
+import ru.diary.services.auth.ResetPasswordService;
 
 import java.net.URI;
 import java.util.Map;
@@ -22,13 +21,15 @@ import java.util.Map;
 @RestController
 public class EmailController {
 
+    private static final String MESSAGE = "message";
     EmailService emailService;
     DataService dataService;
-    ResetPassService passService;
+    ResetPasswordService passService;
     TokenCreator creator;
 
     @Autowired
-    public EmailController(EmailService emailService, DataService dataService, ResetPassService passService, TokenCreator creator) {
+    public EmailController(EmailService emailService, DataService dataService,
+                           ResetPasswordService passService, TokenCreator creator) {
         this.emailService = emailService;
         this.dataService = dataService;
         this.passService = passService;
@@ -40,7 +41,7 @@ public class EmailController {
     public ResponseEntity<Void> confirm(
             @RequestParam("email") String email
     ) {
-        emailService.updateUserActive(email);
+        emailService.updateData(email);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create("http://localhost:3000/confirm"))
@@ -53,15 +54,14 @@ public class EmailController {
     public ResponseEntity<Map<String, String>> resetPassword(
             @RequestBody UserAuth userAuth
     ) {
-        var user = dataService.getUserByEmail(userAuth.getEmail());
-        if (user.isPresent() && user.get().getStatus().equals(Status.ACTIVE)) {
-            passService.resetPassword(userAuth.getEmail());
+
+        if (passService.resetPassword(userAuth.getEmail())) {
             return ResponseEntity.status(HttpStatus.OK).body(Map.of(
-                    "message", "Проверьте свою почту"
+                    MESSAGE, "Проверьте свою почту"
             ));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-                "message","Нет такого email адреса или он не активен"
+                MESSAGE, "Нет такого email адреса или он не активен"
         ));
     }
 
@@ -75,9 +75,7 @@ public class EmailController {
         user.setEmail(creator.getLogin(token));
         dataService.updatePassword(user);
         return Map.of(
-                "message", "Пароль изменен"
+                MESSAGE, "Пароль изменен"
         );
     }
-
-
 }

@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.models.UserAuth;
-import ru.diary.services.EmailService;
 import ru.diary.services.UserService;
 
 import java.util.Map;
@@ -19,13 +18,13 @@ import java.util.Map;
 @Controller
 public class AuthenticationController {
 
-    UserService service;
-    EmailService emailService;
+    private static final String MESSAGE = "message";
+    private static final String TOKEN = "token";
+    UserService userService;
 
     @Autowired
-    public AuthenticationController(UserService service, EmailService emailService) {
-        this.service = service;
-        this.emailService = emailService;
+    public AuthenticationController(UserService service) {
+        this.userService = service;
     }
 
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -35,34 +34,30 @@ public class AuthenticationController {
             @RequestBody UserAuth user
     ) {
 
-        var token = service.loginUser(user);
+        var token = userService.loginUser(user);
 
-        if (token != null) {
-            return ResponseEntity.ok().body(Map.of(
-                    "token", token
-            ));
-        }
+        return token.map(s -> ResponseEntity.ok().body(Map.of(
+                TOKEN, s
+        ))).orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                MESSAGE, "Неправильный логин или пароль"
+        )));
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-                "message", "Неправильный логин или пароль"
-        ));
     }
 
-    //TODO Перенести emailService
+
     @PostMapping(path = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Map<String, String>> registrationUser(
             @RequestBody UserAuth user
     ) {
-        if (service.registrationUser(user)) {
-            emailService.emailActiveMail(user.getEmail());
+        if (userService.registrationUser(user)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "message", "Пользователь создан"
+                    MESSAGE, "Пользователь создан"
             ));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-                "message", "Такой пользователь уже существует"
+                MESSAGE, "Такой пользователь уже существует"
         ));
     }
 }

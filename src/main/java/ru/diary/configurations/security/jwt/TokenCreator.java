@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class TokenCreator {
     //TODO изменить время удаления токена
     @PostConstruct
     protected void init() {
-        key = Base64.getEncoder().encodeToString(key.getBytes());
+        key = Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createToken(String email) {
@@ -49,7 +50,7 @@ public class TokenCreator {
 
     public boolean validTokenTime(String token) {
         var claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-        return !claimsJws.getBody().getExpiration().before(new Date());
+        return !claimsJws.getBody().getExpiration().before(Date.from(Instant.now()));
     }
 
 }

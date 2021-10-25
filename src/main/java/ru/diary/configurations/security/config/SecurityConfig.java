@@ -1,5 +1,7 @@
 package ru.diary.configurations.security.config;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.Filter;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EnableWebSecurity
 @PropertySource(value = "classpath:/security.properties", encoding = "UTF-8")
 @ComponentScan(basePackages = "ru.diary.configurations.security")
@@ -43,11 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        String urlConfirm = environment.getProperty("path.confirm");
-        String urlLogin = environment.getProperty("path.login");
-        String urlRegistration = environment.getProperty("path.registration");
-        String urlResetPass = environment.getProperty("path.reset_pass");
-        String urlUpdatePass = environment.getProperty("path.update_pass");
+        var urlConfirm = environment.getProperty("path.confirm");
+        var urlLogin = environment.getProperty("path.login");
+        var urlRegistration = environment.getProperty("path.registration");
+        var urlResetPass = environment.getProperty("path.reset_pass");
+        var urlUpdatePass = environment.getProperty("path.update_pass");
 
         http
                 .addFilterBefore(encodingFilter, ChannelProcessingFilter.class)

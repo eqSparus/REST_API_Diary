@@ -12,26 +12,26 @@ import ru.diary.services.EmailService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class EmailAuthService implements EmailService {
+public class EmailAuthenticationService implements EmailService {
 
     UserDao dao;
     MailingLetters mailingLetters;
 
     @Autowired
-    public EmailAuthService(UserDao dao, MailingLetters mailingLetters) {
+    public EmailAuthenticationService(UserDao dao, MailingLetters mailingLetters) {
         this.dao = dao;
         this.mailingLetters = mailingLetters;
     }
 
     @Override
-    public void emailActiveMail(String email) {
+    public boolean sendingEmail(String email) {
 
         var uriComponents = UriComponentsBuilder
                 .fromUriString("http://localhost:8080/diary/API/confirm")
                 .queryParam("email", "{email}")
                 .build();
 
-        final String subject = "Подтверждения адреса";
+        final var subject = "Подтверждения адреса";
 
         final String text = """
                 Здравствуйте!
@@ -43,13 +43,13 @@ public class EmailAuthService implements EmailService {
         try {
             mailingLetters.sendingMessageEmail(email, subject, text);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            return false;
         }
-
+        return true;
     }
 
     @Override
-    public void updateUserActive(String email) {
+    public void updateData(String email) {
         dao.updateStatusActive(email);
     }
 }
