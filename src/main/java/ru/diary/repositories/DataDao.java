@@ -1,11 +1,15 @@
 package ru.diary.repositories;
 
-import ru.diary.models.User;
+import java.util.List;
 
-public interface DataDao {
+public interface DataDao<T> {
 
-    void updateName(User user);
+    void create(T t);
 
-    void updatePassword(User user);
+    void update(T t, Long id);
+
+    void delete(Long id);
+
+    List<T> findAll(Long userId);
 
 }

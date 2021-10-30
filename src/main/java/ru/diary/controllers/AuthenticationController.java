@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.models.UserAuth;
+import ru.diary.models.form.UserAuth;
 import ru.diary.services.UserService;
 
 import java.util.Map;

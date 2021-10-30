@@ -1,11 +1,11 @@
 package ru.diary.services;
 
-import ru.diary.models.UserAuth;
+public interface DataService<T,R> {
 
-public interface DataService {
+    void create(T t, String login);
 
-    void updatePassword(UserAuth user);
+    void update(T t, Long id);
 
-    void updateName(UserAuth user);
+    void delete(Long id);
 
 }

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import ru.diary.models.Role;
 
 import javax.servlet.Filter;
 
@@ -51,6 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         var urlRegistration = environment.getProperty("path.registration");
         var urlResetPass = environment.getProperty("path.reset_pass");
         var urlUpdatePass = environment.getProperty("path.update_pass");
+        var urlCrud = environment.getProperty("path.crud");
+        var urlData = environment.getProperty("path.data");
 
         http
                 .addFilterBefore(encodingFilter, ChannelProcessingFilter.class)
@@ -58,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .authorizeRequests()
                 .antMatchers(urlUpdatePass).authenticated()
+                .antMatchers(urlCrud, urlData).hasRole(Role.USER.name())
                 .antMatchers(urlLogin, urlRegistration, urlConfirm, urlResetPass).permitAll();
 
         http.csrf().disable();

@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.UserAuth;
-import ru.diary.services.DataService;
+import ru.diary.models.form.UserAuth;
+import ru.diary.services.DataAuthService;
 import ru.diary.services.EmailService;
 import ru.diary.services.auth.ResetPasswordService;
 
@@ -23,12 +23,12 @@ public class EmailController {
 
     private static final String MESSAGE = "message";
     EmailService emailService;
-    DataService dataService;
+    DataAuthService dataService;
     ResetPasswordService passService;
     TokenCreator creator;
 
     @Autowired
-    public EmailController(EmailService emailService, DataService dataService,
+    public EmailController(EmailService emailService, DataAuthService dataService,
                            ResetPasswordService passService, TokenCreator creator) {
         this.emailService = emailService;
         this.dataService = dataService;

@@ -12,7 +12,7 @@ import ru.diary.configurations.security.jwt.TokenCreator;
 import ru.diary.models.Role;
 import ru.diary.models.Status;
 import ru.diary.models.User;
-import ru.diary.models.UserAuth;
+import ru.diary.models.form.UserAuth;
 import ru.diary.repositories.UserDao;
 import ru.diary.services.EmailService;
 import ru.diary.services.UserService;

@@ -1,6 +1,6 @@
 package ru.diary.services;
 
-import ru.diary.models.UserAuth;
+import ru.diary.models.form.UserAuth;
 
 import java.util.Optional;
 
