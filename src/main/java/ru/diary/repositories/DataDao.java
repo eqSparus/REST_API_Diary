@@ -1,10 +1,11 @@
 package ru.diary.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DataDao<T> {
 
-    void create(T t);
+    Optional<T> create(T t);
 
     void update(T t, Long id);
 

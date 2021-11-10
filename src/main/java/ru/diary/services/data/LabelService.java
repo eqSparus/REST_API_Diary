@@ -24,17 +24,19 @@ public class LabelService implements DataService<LabelForm, Label> {
     }
 
     @Override
-    public void create(LabelForm labelForm, String login) {
+    public Label create(LabelForm labelForm, String login) {
 
         var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
 
         var label = Label.builder()
                 .title(labelForm.getTitle())
                 .color(labelForm.getColor())
+                .createDate(labelForm.getCreateDate())
                 .userId(user.getId())
                 .build();
 
-        labelDao.create(label);
+        var newLabel = labelDao.create(label);
+        return newLabel.orElseThrow(IllegalAccessError::new);
     }
 
     @Override

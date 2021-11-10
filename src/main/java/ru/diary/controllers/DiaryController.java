@@ -29,12 +29,11 @@ public class DiaryController {
 
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(code = HttpStatus.OK)
-    public String createDiary(
+    public Diary createDiary(
             @RequestHeader("Authorization") String header,
             @RequestBody DiaryForm diaryForm
     ) {
-        diaryService.create(diaryForm, creator.getLogin(header));
-        return "";
+        return diaryService.create(diaryForm, creator.getLogin(header));
     }
 
     @DeleteMapping(path = "/delete")

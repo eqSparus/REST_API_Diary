@@ -12,7 +12,7 @@ import ru.diary.services.DataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class DiaryService implements DataService<DiaryForm,Diary> {
+public class DiaryService implements DataService<DiaryForm, Diary> {
 
     UserDao userDao;
     DiaryDao diaryDao;
@@ -24,17 +24,20 @@ public class DiaryService implements DataService<DiaryForm,Diary> {
     }
 
     @Override
-    public void create(DiaryForm diaryForm, String login) {
+    public Diary create(DiaryForm diaryForm, String login) {
 
         var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
 
         var diary = Diary.builder()
                 .title(diaryForm.getTitle())
+                .description(diaryForm.getDescription())
+                .createDate(diaryForm.getCreateDate())
                 .userId(user.getId())
                 .build();
 
 
-        diaryDao.create(diary);
+        var newDiary = diaryDao.create(diary);
+        return newDiary.orElseThrow(IllegalAccessError::new);
     }
 
     @Override

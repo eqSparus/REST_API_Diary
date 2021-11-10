@@ -11,5 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class Diary {
     Long id;
     String title;
+    String description;
+    String createDate;
     Long userId;
 }

@@ -14,5 +14,6 @@ public class Label {
     Long id;
     String title;
     String color;
+    String createDate;
     Long userId;
 }

@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.diary.models.Diary;
 import ru.diary.repositories.DiaryDao;
 
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Repository
@@ -27,8 +29,12 @@ public class UserDiaryDao implements DiaryDao {
     }
 
     //language=SQL
+    static String SQL_FIND_CREATE_DIARY =
+            "SELECT * FROM diaries WHERE diary_id = ?";
+
+    //language=SQL
     static String SQL_INSERT_DIARY =
-            "INSERT INTO diaries( title, user_id) VALUES (?, ?)";
+            "INSERT INTO diaries(title, description, create_at, user_id) VALUES (?, ?, ?, ?)";
 
     //language=SQL
     static String SQL_DELETE_DIARY =
@@ -36,16 +42,29 @@ public class UserDiaryDao implements DiaryDao {
 
     //language=SQL
     static String SQL_UPDATE_DIARY =
-            "UPDATE diaries SET title = ? WHERE diary_id = ?";
+            "UPDATE diaries SET title = ?, description = ? WHERE diary_id = ?";
 
     //language=SQL
     static String SQL_FIND_ALL_DIARY_BY_USER =
             "SELECT * FROM diaries WHERE user_id = ?";
 
     @Override
-    public void create(Diary diary) {
+    public Optional<Diary> create(Diary diary) {
         LOG.info("{},{}", diary.getTitle(), diary.getUserId());
-        jdbcTemplate.update(SQL_INSERT_DIARY, diary.getTitle(), diary.getUserId());
+
+        var key = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            var ps = con.prepareStatement(SQL_INSERT_DIARY, new String[]{"diary_id"});
+            ps.setString(1, diary.getTitle());
+            ps.setString(2, diary.getDescription());
+            ps.setString(3, diary.getCreateDate());
+            ps.setLong(4, diary.getUserId());
+            return ps;
+        }, key);
+
+        return jdbcTemplate.queryForStream(SQL_FIND_CREATE_DIARY, diaryMapper,
+                key.getKey().longValue()).findAny();
     }
 
     @Override
@@ -66,6 +85,8 @@ public class UserDiaryDao implements DiaryDao {
     RowMapper<Diary> diaryMapper = (rs, rowNum) -> Diary.builder()
             .id(rs.getLong("diary_id"))
             .title(rs.getString("title"))
+            .description(rs.getString("description"))
+            .createDate(rs.getString("create_at"))
             .userId(rs.getLong("user_id"))
             .build();
 }
