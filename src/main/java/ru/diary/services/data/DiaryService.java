@@ -30,8 +30,6 @@ public class DiaryService implements DataService<DiaryForm, Diary> {
 
         var diary = Diary.builder()
                 .title(diaryForm.getTitle())
-                .description(diaryForm.getDescription())
-                .createDate(diaryForm.getCreateDate())
                 .userId(user.getId())
                 .build();
 

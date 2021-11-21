@@ -34,7 +34,7 @@ public class UserDiaryDao implements DiaryDao {
 
     //language=SQL
     static String SQL_INSERT_DIARY =
-            "INSERT INTO diaries(title, description, create_at, user_id) VALUES (?, ?, ?, ?)";
+            "INSERT INTO diaries(title, user_id) VALUES (?, ?)";
 
     //language=SQL
     static String SQL_DELETE_DIARY =
@@ -42,7 +42,7 @@ public class UserDiaryDao implements DiaryDao {
 
     //language=SQL
     static String SQL_UPDATE_DIARY =
-            "UPDATE diaries SET title = ?, description = ? WHERE diary_id = ?";
+            "UPDATE diaries SET title = ? WHERE diary_id = ?";
 
     //language=SQL
     static String SQL_FIND_ALL_DIARY_BY_USER =
@@ -57,9 +57,7 @@ public class UserDiaryDao implements DiaryDao {
         jdbcTemplate.update(con -> {
             var ps = con.prepareStatement(SQL_INSERT_DIARY, new String[]{"diary_id"});
             ps.setString(1, diary.getTitle());
-            ps.setString(2, diary.getDescription());
-            ps.setString(3, diary.getCreateDate());
-            ps.setLong(4, diary.getUserId());
+            ps.setLong(2, diary.getUserId());
             return ps;
         }, key);
 
@@ -85,8 +83,6 @@ public class UserDiaryDao implements DiaryDao {
     RowMapper<Diary> diaryMapper = (rs, rowNum) -> Diary.builder()
             .id(rs.getLong("diary_id"))
             .title(rs.getString("title"))
-            .description(rs.getString("description"))
-            .createDate(rs.getString("create_at"))
             .userId(rs.getLong("user_id"))
             .build();
 }

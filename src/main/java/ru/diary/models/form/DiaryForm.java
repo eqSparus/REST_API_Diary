@@ -11,17 +11,11 @@ import lombok.experimental.FieldDefaults;
 public class DiaryForm {
 
     String title;
-    String description;
-    String createDate;
 
     @JsonCreator
     public DiaryForm(
-            @JsonProperty("title") String title,
-            @JsonProperty("description") String description,
-            @JsonProperty("createAt") String createDate
+            @JsonProperty("title") String title
     ) {
         this.title = title;
-        this.description = description;
-        this.createDate = createDate;
     }
 }

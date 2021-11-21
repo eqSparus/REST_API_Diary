@@ -30,7 +30,7 @@ public class UserLabelDao implements LabelDao {
 
     //language=SQL
     static String SQL_INSERT_LABEL =
-            "INSERT INTO labels(title, color, create_at, user_id) VALUES (?, ?, ?, ?)";
+            "INSERT INTO labels(title, color, user_id) VALUES (?, ?, ?)";
 
     //language=SQL
     static String SQL_DELETE_LABEL =
@@ -54,8 +54,7 @@ public class UserLabelDao implements LabelDao {
             var ps = con.prepareStatement(SQL_INSERT_LABEL, new String[]{"label_id"});
             ps.setString(1, label.getTitle());
             ps.setString(2, label.getColor());
-            ps.setString(3, label.getCreateDate());
-            ps.setLong(4, label.getUserId());
+            ps.setLong(3, label.getUserId());
             return ps;
         }, key);
 
@@ -82,7 +81,6 @@ public class UserLabelDao implements LabelDao {
             .id(rs.getLong("label_id"))
             .title(rs.getString("title"))
             .color(rs.getString("color"))
-            .createDate(rs.getString("create_at"))
             .userId(rs.getLong("user_id"))
             .build();
 }

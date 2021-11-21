@@ -30,12 +30,11 @@ public class LabelController {
 
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(code = HttpStatus.OK)
-    public String createLabel(
+    public Label createLabel(
             @RequestHeader("Authorization") String header,
             @RequestBody LabelForm labelForm
     ) {
-        labelService.create(labelForm, creator.getLogin(header));
-        return "";
+        return labelService.create(labelForm, creator.getLogin(header));
     }
 
     @DeleteMapping(path = "/delete")

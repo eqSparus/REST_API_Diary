@@ -67,7 +67,7 @@ public class UserAuthenticationService implements UserService {
                             .status(Status.IN_BASE)
                             .build();
                     userDao.create(newUser);
-                    emailService.sendingEmail(newUser.getEmail());
+//                    emailService.sendingEmail(newUser.getEmail());
                     LOG.info("create user {}", user);
                     return true;
                 });

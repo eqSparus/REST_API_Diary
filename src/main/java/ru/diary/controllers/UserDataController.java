@@ -18,14 +18,17 @@ import java.util.Map;
 @RestController
 public class UserDataController {
 
+    static String LABELS = "labels";
+    static String DIARIES = "diaries";
+    static String RECORDS = "records";
+    static String USER = "user";
+
     AllInformationService informationService;
-    UserDao userDao;
     TokenCreator creator;
 
     @Autowired
-    public UserDataController(AllInformationService informationService, UserDao userDao, TokenCreator creator) {
+    public UserDataController(AllInformationService informationService, TokenCreator creator) {
         this.informationService = informationService;
-        this.userDao = userDao;
         this.creator = creator;
     }
 
@@ -35,16 +38,18 @@ public class UserDataController {
             @RequestHeader("Authorization") String header
     ) {
 
-        var login = creator.getLogin(header);
-        var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
-        var label = informationService.findAllLabel(user.getId());
-        var diary = informationService.findAllDiary(user.getId());
+        var email = creator.getLogin(header);
+        var user = informationService.findUser(email);
+        var labels = informationService.findAllLabel(user.getId());
+        var diaries = informationService.findAllDiary(user.getId());
+        var records = informationService.findAllRecord(user.getId());
 
 
         return Map.of(
-                "user", new UserForm(user),
-                "labels", label,
-                "diary", diary
+                USER, new UserForm(user),
+                LABELS, labels,
+                DIARIES, diaries,
+                RECORDS, records
         );
     }
 

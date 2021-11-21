@@ -18,8 +18,8 @@ import java.util.Map;
 @Controller
 public class AuthenticationController {
 
-    private static final String MESSAGE = "message";
-    private static final String TOKEN = "token";
+    static String MESSAGE = "message";
+    static String TOKEN = "token";
     UserService userService;
 
     @Autowired

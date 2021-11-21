@@ -11,16 +11,13 @@ import lombok.experimental.FieldDefaults;
 public class LabelForm {
     String title;
     String color;
-    String createDate;
 
     @JsonCreator
     public LabelForm(
             @JsonProperty("title") String title,
-            @JsonProperty("color") String color,
-            @JsonProperty("createAt") String createDate
+            @JsonProperty("color") String color
     ) {
         this.title = title;
         this.color = color;
-        this.createDate = createDate;
     }
 }

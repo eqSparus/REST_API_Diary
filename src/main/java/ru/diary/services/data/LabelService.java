@@ -31,7 +31,6 @@ public class LabelService implements DataService<LabelForm, Label> {
         var label = Label.builder()
                 .title(labelForm.getTitle())
                 .color(labelForm.getColor())
-                .createDate(labelForm.getCreateDate())
                 .userId(user.getId())
                 .build();
 
