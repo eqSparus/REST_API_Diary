@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.models.form.UserAuth;
 import ru.diary.services.UserService;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST, maxAge = 3600)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Controller
+@RestController
 public class AuthenticationController {
 
     static String MESSAGE = "message";
@@ -33,7 +32,6 @@ public class AuthenticationController {
     public ResponseEntity<Map<String, String>> loginUser(
             @RequestBody UserAuth user
     ) {
-
         var token = userService.loginUser(user);
 
         return token.map(s -> ResponseEntity.ok().body(Map.of(

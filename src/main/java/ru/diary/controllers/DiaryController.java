@@ -47,14 +47,11 @@ public class DiaryController {
 
     @PutMapping(path = "/update")
     @ResponseStatus(code = HttpStatus.OK)
-    public String updateDiary(
+    public Diary updateDiary(
             @RequestParam("id") Long id,
             @RequestBody DiaryForm diaryForm
     ) {
-
-        diaryService.update(diaryForm, id);
-
-        return "";
+        return diaryService.update(diaryForm, id);
     }
 
 }

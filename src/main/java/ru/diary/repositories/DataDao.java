@@ -7,7 +7,7 @@ public interface DataDao<T> {
 
     Optional<T> create(T t);
 
-    void update(T t, Long id);
+    Optional<T> update(T t, Long id);
 
     void delete(Long id);
 

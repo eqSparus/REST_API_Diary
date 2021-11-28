@@ -26,6 +26,7 @@ repositories {
 ext {
     //Test
     junitVersion = '5.8.0'
+    mockitoVersion = '1.10.19'
     //Different
     lombockVersion = '1.18.20'
     jacksonVersion = '2.12.5'
@@ -48,6 +49,9 @@ dependencies {
     //Test stack start
     //JUnit tests
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+    testImplementation group: 'org.springframework', name: 'spring-test', version: springVersion
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: mockitoVersion
     //Test stack end
 
 
@@ -70,7 +74,7 @@ dependencies {
     //Postgre SQL JDBC
     implementation group: 'org.postgresql', name: 'postgresql', version: postgreSQLVersion
     //Servlet API
-    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: servletVersion
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: servletVersion
     //Annotation API
     implementation group: 'javax.annotation', name: 'javax.annotation-api', version: javaxAnnotationVersion
     //Spring Security Core

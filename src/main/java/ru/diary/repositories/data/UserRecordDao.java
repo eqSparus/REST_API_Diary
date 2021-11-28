@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import ru.diary.models.Record;
 import ru.diary.repositories.RecordDao;
 
-import javax.sql.rowset.spi.SyncResolver;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class UserRecordDao implements RecordDao {
     }
 
     //language=SQL
-    static String SQL_FIND_CREATE_RECORD =
+    static String SQL_FIND_UP_CR_RECORD =
             "SELECT * FROM records WHERE record_id = ?";
 
     //language=SQL
@@ -43,8 +42,12 @@ public class UserRecordDao implements RecordDao {
             "DELETE FROM records WHERE record_id = ?";
 
     //language=SQL
+    static String SQL_DELETE_RECORD_BY_DIARY =
+            "DELETE FROM records WHERE diary_id = ?";
+
+    //language=SQL
     static String SQL_UPDATE_RECORD =
-            "UPDATE records SET text_body = ?, bookmark = ?, label_id = ?";
+            "UPDATE records SET bookmark = ? WHERE record_id = ?";
 
 
     @Override
@@ -58,29 +61,46 @@ public class UserRecordDao implements RecordDao {
             ps.setString(2, record.getDateCreate());
             ps.setBoolean(3, record.getIsBookmark());
             ps.setLong(4, record.getDiaryId());
-            ps.setLong(5, record.getLabelId());
+            ps.setObject(5, record.getLabelId());
             ps.setLong(6, record.getUserId());
             return ps;
         }, key);
 
 
-        return jdbcTemplate.queryForStream(SQL_FIND_CREATE_RECORD, recordMapper,
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_RECORD, recordMapper,
                 key.getKey().longValue()).findAny();
     }
 
     @Override
-    public void update(Record record, Long id) {
+    public Optional<Record> update(Record record, Long id) {
         jdbcTemplate.update(SQL_UPDATE_RECORD,
-                record.getTextBody(),
                 record.getIsBookmark(),
-                record.getLabelId(),
                 id);
+
+        var key = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            var ps = con.prepareStatement(SQL_UPDATE_RECORD, new String[]{"record_id"});
+            ps.setBoolean(1, record.getIsBookmark());
+            ps.setLong(2, id);
+            return ps;
+        }, key);
+
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_RECORD, recordMapper,
+                key.getKey().longValue()).findAny();
     }
 
     @Override
     public void delete(Long id) {
         jdbcTemplate.update(SQL_DELETE_RECORD, id);
     }
+
+
+    @Override
+    public void deleteByDiary(Long id) {
+        jdbcTemplate.update(SQL_DELETE_RECORD_BY_DIARY, id);
+    }
+
 
     @Override
     public List<Record> findAll(Long userId) {
@@ -96,4 +116,6 @@ public class UserRecordDao implements RecordDao {
             .userId(rs.getLong("user_id"))
             .labelId(rs.getLong("label_id"))
             .build();
+
+
 }

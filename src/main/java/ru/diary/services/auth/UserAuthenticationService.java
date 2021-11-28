@@ -2,8 +2,6 @@ package ru.diary.services.auth;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +21,6 @@ import java.util.Optional;
 @Service
 public class UserAuthenticationService implements UserService {
 
-    static Logger LOG = LoggerFactory.getLogger("test");
     EmailService emailService;
     UserDao userDao;
     TokenCreator creator;
@@ -68,7 +65,6 @@ public class UserAuthenticationService implements UserService {
                             .build();
                     userDao.create(newUser);
                     emailService.sendingEmail(newUser.getEmail());
-                    LOG.info("create user {}", user);
                     return true;
                 });
     }

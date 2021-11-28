@@ -34,20 +34,20 @@ public class LabelService implements DataService<LabelForm, Label> {
                 .userId(user.getId())
                 .build();
 
-        var newLabel = labelDao.create(label);
-        return newLabel.orElseThrow(IllegalAccessError::new);
+
+        return labelDao.create(label).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
-    public void update(LabelForm labelForm, Long id) {
+    public Label update(LabelForm labelForm, Long id) {
 
-        labelDao.update(
+        return labelDao.update(
                 Label.builder()
                         .title(labelForm.getTitle())
                         .color(labelForm.getColor())
                         .build(),
                 id
-        );
+        ).orElseThrow(IllegalAccessError::new);
 
     }
 

@@ -25,8 +25,9 @@ public class UserLabelDao implements LabelDao {
     }
 
     //language=SQL
-    static String SQL_FIND_CREATE_LABEL =
+    static String SQL_FIND_UP_CR_LABEL =
             "SELECT * FROM labels WHERE label_id = ?";
+
 
     //language=SQL
     static String SQL_INSERT_LABEL =
@@ -58,13 +59,25 @@ public class UserLabelDao implements LabelDao {
             return ps;
         }, key);
 
-        return jdbcTemplate.queryForStream(SQL_FIND_CREATE_LABEL, labelMapper,
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_LABEL, labelMapper,
                 key.getKey().longValue()).findAny();
     }
 
     @Override
-    public void update(Label label, Long id) {
-        jdbcTemplate.update(SQL_UPDATE_LABEL, label.getTitle(), label.getColor(), id);
+    public Optional<Label> update(Label label, Long id) {
+
+        var key = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            var ps = con.prepareStatement(SQL_UPDATE_LABEL, new String[]{"label_id"});
+            ps.setString(1, label.getTitle());
+            ps.setString(2, label.getColor());
+            ps.setLong(3, id);
+            return ps;
+        }, key);
+
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_LABEL, labelMapper,
+                key.getKey().longValue()).findAny();
     }
 
     @Override

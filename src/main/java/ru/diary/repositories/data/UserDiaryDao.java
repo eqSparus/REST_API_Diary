@@ -2,8 +2,6 @@ package ru.diary.repositories.data;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -20,8 +18,6 @@ import java.util.Optional;
 public class UserDiaryDao implements DiaryDao {
 
     JdbcTemplate jdbcTemplate;
-    static Logger LOG = LoggerFactory.getLogger("test");
-
 
     @Autowired
     public UserDiaryDao(JdbcTemplate jdbcTemplate) {
@@ -29,8 +25,9 @@ public class UserDiaryDao implements DiaryDao {
     }
 
     //language=SQL
-    static String SQL_FIND_CREATE_DIARY =
+    static String SQL_FIND_UP_CR_DIARY =
             "SELECT * FROM diaries WHERE diary_id = ?";
+
 
     //language=SQL
     static String SQL_INSERT_DIARY =
@@ -50,8 +47,6 @@ public class UserDiaryDao implements DiaryDao {
 
     @Override
     public Optional<Diary> create(Diary diary) {
-        LOG.info("{},{}", diary.getTitle(), diary.getUserId());
-
         var key = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
@@ -61,7 +56,7 @@ public class UserDiaryDao implements DiaryDao {
             return ps;
         }, key);
 
-        return jdbcTemplate.queryForStream(SQL_FIND_CREATE_DIARY, diaryMapper,
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_DIARY, diaryMapper,
                 key.getKey().longValue()).findAny();
     }
 
@@ -71,8 +66,17 @@ public class UserDiaryDao implements DiaryDao {
     }
 
     @Override
-    public void update(Diary diary, Long id) {
-        jdbcTemplate.update(SQL_UPDATE_DIARY, diary.getTitle(), id);
+    public Optional<Diary> update(Diary diary, Long id) {
+        var key = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            var ps = con.prepareStatement(SQL_UPDATE_DIARY, new String[]{"diary_id"});
+            ps.setString(1, diary.getTitle());
+            ps.setLong(2, id);
+            return ps;
+        }, key);
+        return jdbcTemplate.queryForStream(SQL_FIND_UP_CR_DIARY, diaryMapper,
+                key.getKey().longValue()).findAny();
     }
 
     @Override

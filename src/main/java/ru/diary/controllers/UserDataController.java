@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.TokenCreator;
 import ru.diary.models.form.UserForm;
-import ru.diary.repositories.UserDao;
 import ru.diary.services.data.AllInformationService;
 
 import java.util.Map;

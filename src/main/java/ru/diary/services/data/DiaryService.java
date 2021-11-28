@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.diary.models.Diary;
 import ru.diary.models.form.DiaryForm;
 import ru.diary.repositories.DiaryDao;
+import ru.diary.repositories.RecordDao;
 import ru.diary.repositories.UserDao;
 import ru.diary.services.DataService;
 
@@ -16,11 +17,13 @@ public class DiaryService implements DataService<DiaryForm, Diary> {
 
     UserDao userDao;
     DiaryDao diaryDao;
+    RecordDao recordDao;
 
     @Autowired
-    public DiaryService(UserDao userDao, DiaryDao diaryDao) {
+    public DiaryService(UserDao userDao, DiaryDao diaryDao, RecordDao recordDao) {
         this.userDao = userDao;
         this.diaryDao = diaryDao;
+        this.recordDao = recordDao;
     }
 
     @Override
@@ -39,17 +42,18 @@ public class DiaryService implements DataService<DiaryForm, Diary> {
     }
 
     @Override
-    public void update(DiaryForm diaryForm, Long id) {
-        diaryDao.update(
+    public Diary update(DiaryForm diaryForm, Long id) {
+        return diaryDao.update(
                 Diary.builder()
                         .title(diaryForm.getTitle())
                         .build(),
                 id
-        );
+        ).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
     public void delete(Long id) {
+        recordDao.deleteByDiary(id);
         diaryDao.delete(id);
     }
 }

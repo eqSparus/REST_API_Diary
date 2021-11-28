@@ -2,13 +2,15 @@ package ru.diary.controllers;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.Label;
-import ru.diary.models.form.LabelForm;
+import ru.diary.models.Record;
+import ru.diary.models.form.RecordForm;
 import ru.diary.services.DataService;
 
 @CrossOrigin(origins = "http://localhost:3000",
@@ -16,46 +18,47 @@ import ru.diary.services.DataService;
         maxAge = 3600)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
-@RequestMapping(path = "/crud/label")
-public class LabelController {
+@RequestMapping(path = "/crud/record")
+public class RecordController {
 
-    DataService<LabelForm, Label> labelService;
+    static Logger LOG = LoggerFactory.getLogger("test");
+
+    DataService<RecordForm, Record> recordService;
     TokenCreator creator;
 
     @Autowired
-    public LabelController(DataService<LabelForm, Label> labelService, TokenCreator creator) {
-        this.labelService = labelService;
+    public RecordController(DataService<RecordForm, Record> recordService, TokenCreator creator) {
+        this.recordService = recordService;
         this.creator = creator;
     }
 
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(code = HttpStatus.OK)
-    public Label createLabel(
+    public Record createRecord(
             @RequestHeader("Authorization") String header,
-            @RequestBody LabelForm labelForm
+            @RequestBody RecordForm recordForm
     ) {
-        return labelService.create(labelForm, creator.getLogin(header));
+        LOG.info("New record {}", recordForm);
+        return recordService.create(recordForm, creator.getLogin(header));
     }
 
     @DeleteMapping(path = "/delete")
     @ResponseStatus(code = HttpStatus.OK)
-    public String deleteDiary(
+    public String deleteRecord(
             @RequestParam("id") Long id
     ) {
-        labelService.delete(id);
+        recordService.delete(id);
         return "";
     }
 
     @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(code = HttpStatus.OK)
-    public Label updateDiary(
+    public Record updateRecord(
             @RequestParam("id") Long id,
-            @RequestBody LabelForm labelForm
+            @RequestBody RecordForm recordForm
     ) {
-        return labelService.update(labelForm, id);
+        return recordService.update(recordForm, id);
     }
-
-
 }
