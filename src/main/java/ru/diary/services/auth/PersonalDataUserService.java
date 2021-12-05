@@ -25,7 +25,7 @@ public class PersonalDataUserService implements DataAuthService {
     }
 
     @Override
-    public void updatePassword(UserAuth user) {
+    public void resetPassword(UserAuth user) {
 
         var newDataUsed = User.builder()
                 .email(user.getEmail())
@@ -35,17 +35,4 @@ public class PersonalDataUserService implements DataAuthService {
         dataDao.updatePassword(newDataUsed);
 
     }
-
-    @Override
-    public void updateName(UserAuth user) {
-
-        var newDateUsed = User.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .build();
-
-        dataDao.updateName(newDateUsed);
-    }
-
-
 }

@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         var urlUpdatePass = environment.getProperty("path.update_pass");
         var urlCrud = environment.getProperty("path.crud");
         var urlData = environment.getProperty("path.data");
+        var urlUpdate = environment.getProperty("path.update");
 
         http
                 .addFilterBefore(encodingFilter, ChannelProcessingFilter.class)
@@ -61,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .authorizeRequests()
                 .antMatchers(urlUpdatePass).authenticated()
-                .antMatchers(urlCrud, urlData).hasRole(Role.USER.name())
+                .antMatchers(urlCrud, urlData, urlUpdate).hasRole(Role.USER.name())
                 .antMatchers(urlLogin, urlRegistration, urlConfirm, urlResetPass).permitAll();
 
         http.csrf().disable();

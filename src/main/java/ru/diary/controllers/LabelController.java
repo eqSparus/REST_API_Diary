@@ -56,6 +56,4 @@ public class LabelController {
     ) {
         return labelService.update(labelForm, id);
     }
-
-
 }

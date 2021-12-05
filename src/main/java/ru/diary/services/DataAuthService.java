@@ -4,8 +4,6 @@ import ru.diary.models.form.UserAuth;
 
 public interface DataAuthService {
 
-    void updatePassword(UserAuth user);
-
-    void updateName(UserAuth user);
+    void resetPassword(UserAuth user);
 
 }

@@ -53,5 +53,4 @@ public class DiaryController {
     ) {
         return diaryService.update(diaryForm, id);
     }
-
 }

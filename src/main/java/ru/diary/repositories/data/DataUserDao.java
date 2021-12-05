@@ -21,12 +21,11 @@ public class DataUserDao implements PersonalDataDao {
 
     //language=SQL
     static String SQL_UPDATE_NAME =
-            "UPDATE users SET name = ? WHERE email = ?";
+            "UPDATE users SET username = ? WHERE email = ?";
 
     //language=SQL
     static String SQL_UPDATE_PASSWORD =
             "UPDATE users SET password = ? WHERE email = ?";
-
 
     @Override
     public void updateName(User user) {
@@ -35,7 +34,6 @@ public class DataUserDao implements PersonalDataDao {
 
     @Override
     public void updatePassword(User user) {
-        System.out.println(user.getPassword());
         template.update(SQL_UPDATE_PASSWORD, user.getPassword(), user.getEmail());
     }
 }

@@ -73,7 +73,7 @@ public class EmailController {
             @RequestBody UserAuth user
     ) {
         user.setEmail(creator.getLogin(token));
-        dataService.updatePassword(user);
+        dataService.resetPassword(user);
         return Map.of(
                 MESSAGE, "Пароль изменен"
         );
