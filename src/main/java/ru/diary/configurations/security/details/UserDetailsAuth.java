@@ -40,7 +40,7 @@ public class UserDetailsAuth implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getStatus().equals(Status.DELETE);
+        return !user.getStatus().equals(Status.DELETE);
     }
 
     @Override
@@ -50,6 +50,6 @@ public class UserDetailsAuth implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus().equals(Status.ACTIVE);
+        return user.getStatus().equals(Status.IN_BASE) || user.getStatus().equals(Status.ACTIVE);
     }
 }

@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.form.UserAuth;
-import ru.diary.services.DataAuthService;
-import ru.diary.services.EmailService;
+import ru.diary.configurations.security.jwt.JwtTokenProvider;
+import ru.diary.models.dto.UserAuth;
+import ru.diary.services.IDataAuthService;
+import ru.diary.services.IEmailService;
 import ru.diary.services.auth.ResetPasswordService;
+import ru.diary.services.auth.RestPasswordEmailException;
 
 import java.net.URI;
 import java.util.Map;
@@ -21,23 +22,22 @@ import java.util.Map;
 @RestController
 public class EmailController {
 
-    private static final String MESSAGE = "message";
-    EmailService emailService;
-    DataAuthService dataService;
+    static String MESSAGE = "message";
+    IEmailService emailService;
+    IDataAuthService dataService;
     ResetPasswordService passService;
-    TokenCreator creator;
+    JwtTokenProvider creator;
 
     @Autowired
-    public EmailController(EmailService emailService, DataAuthService dataService,
-                           ResetPasswordService passService, TokenCreator creator) {
+    public EmailController(IEmailService emailService, IDataAuthService dataService,
+                           ResetPasswordService passService, JwtTokenProvider creator) {
         this.emailService = emailService;
         this.dataService = dataService;
         this.passService = passService;
         this.creator = creator;
     }
 
-    @GetMapping(path = "/confirm")
-    @ResponseStatus(code = HttpStatus.OK)
+    @GetMapping(path = "/confirm", params = "email")
     public ResponseEntity<Void> confirm(
             @RequestParam("email") String email
     ) {
@@ -49,33 +49,22 @@ public class EmailController {
     }
 
 
-    @PostMapping(path = "/reset_pass", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> resetPassword(
+    @PostMapping(path = "/reset_pass", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> resetPassword(
             @RequestBody UserAuth userAuth
-    ) {
-
-        if (passService.resetPassword(userAuth.getEmail())) {
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of(
-                    MESSAGE, "Проверьте свою почту"
-            ));
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-                MESSAGE, "Нет такого email адреса или он не активен"
-        ));
+    ) throws RestPasswordEmailException {
+        return Map.of(MESSAGE, passService.resetPassword(userAuth.getEmail()));
     }
 
-    @PostMapping(path = "/update_pass", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
+    @PostMapping(path = "/update_pass", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> updatePassword(
             @RequestHeader(name = "Authorization") String token,
             @RequestBody UserAuth user
     ) {
-        user.setEmail(creator.getLogin(token));
+        user.setEmail(creator.getEmail(token));
         dataService.resetPassword(user);
-        return Map.of(
-                MESSAGE, "Пароль изменен"
-        );
+        return Map.of(MESSAGE, "Пароль изменен");
     }
 }

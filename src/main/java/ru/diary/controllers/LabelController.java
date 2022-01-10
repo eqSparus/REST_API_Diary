@@ -5,11 +5,12 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.configurations.security.jwt.TokenCreator;
+import ru.diary.configurations.security.jwt.JwtTokenProvider;
 import ru.diary.models.Label;
-import ru.diary.models.form.LabelForm;
-import ru.diary.services.DataService;
+import ru.diary.models.dto.LabelDto;
+import ru.diary.services.IDataService;
 
 @CrossOrigin(origins = "http://localhost:3000",
         methods = {RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT},
@@ -19,41 +20,39 @@ import ru.diary.services.DataService;
 @RequestMapping(path = "/crud/label")
 public class LabelController {
 
-    DataService<LabelForm, Label> labelService;
-    TokenCreator creator;
+    IDataService<LabelDto, Label> labelService;
+    JwtTokenProvider creator;
 
     @Autowired
-    public LabelController(DataService<LabelForm, Label> labelService, TokenCreator creator) {
+    public LabelController(IDataService<LabelDto, Label> labelService, JwtTokenProvider creator) {
         this.labelService = labelService;
         this.creator = creator;
     }
 
-    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Label createLabel(
             @RequestHeader("Authorization") String header,
-            @RequestBody LabelForm labelForm
+            @RequestBody LabelDto labelDto
     ) {
-        return labelService.create(labelForm, creator.getLogin(header));
+        return labelService.create(labelDto, creator.getEmail(header));
     }
 
-    @DeleteMapping(path = "/delete")
-    @ResponseStatus(code = HttpStatus.OK)
-    public String deleteDiary(
+    @DeleteMapping(params = "id")
+    public ResponseEntity<?> deleteDiary(
             @RequestParam("id") Long id
     ) {
         labelService.delete(id);
-        return "";
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(params = "id", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(code = HttpStatus.OK)
     public Label updateDiary(
             @RequestParam("id") Long id,
-            @RequestBody LabelForm labelForm
+            @RequestBody LabelDto labelDto
     ) {
-        return labelService.update(labelForm, id);
+        return labelService.update(labelDto, id);
     }
 }

@@ -5,55 +5,57 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.diary.models.Diary;
-import ru.diary.models.form.DiaryForm;
-import ru.diary.repositories.DiaryDao;
-import ru.diary.repositories.RecordDao;
-import ru.diary.repositories.UserDao;
-import ru.diary.services.DataService;
+import ru.diary.models.dto.DiaryDto;
+import ru.diary.repositories.IDiaryRepository;
+import ru.diary.repositories.IRecordRepository;
+import ru.diary.repositories.IUserRepository;
+import ru.diary.services.IDataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class DiaryService implements DataService<DiaryForm, Diary> {
+public class DiaryService implements IDataService<DiaryDto, Diary> {
 
-    UserDao userDao;
-    DiaryDao diaryDao;
-    RecordDao recordDao;
+    IUserRepository userRepository;
+    IDiaryRepository diaryRepository;
+    IRecordRepository recordRepository;
 
     @Autowired
-    public DiaryService(UserDao userDao, DiaryDao diaryDao, RecordDao recordDao) {
-        this.userDao = userDao;
-        this.diaryDao = diaryDao;
-        this.recordDao = recordDao;
+    public DiaryService(IUserRepository userRepository,
+                        IDiaryRepository diaryRepository,
+                        IRecordRepository recordRepository) {
+        this.userRepository = userRepository;
+        this.diaryRepository = diaryRepository;
+        this.recordRepository = recordRepository;
     }
 
     @Override
-    public Diary create(DiaryForm diaryForm, String login) {
+    public Diary create(DiaryDto diaryDto, String login) {
 
-        var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
+        var user = userRepository.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
 
         var diary = Diary.builder()
-                .title(diaryForm.getTitle())
+                .title(diaryDto.getTitle())
                 .userId(user.getId())
                 .build();
 
 
-        var newDiary = diaryDao.create(diary);
+        var newDiary = diaryRepository.create(diary);
         return newDiary.orElseThrow(IllegalAccessError::new);
     }
 
     @Override
-    public Diary update(DiaryForm diaryForm, Long id) {
-        return diaryDao.update(
+    public Diary update(DiaryDto diaryDto, Long id) {
+        return diaryRepository.update(
                 Diary.builder()
-                        .title(diaryForm.getTitle())
-                        .build(),
-                id
+                        .id(id)
+                        .title(diaryDto.getTitle())
+                        .build()
         ).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
     public void delete(Long id) {
-        recordDao.deleteByDiary(id);
-        diaryDao.delete(id);
+        recordRepository.deleteByDiary(id);
+        diaryRepository.delete(id);
     }
 }

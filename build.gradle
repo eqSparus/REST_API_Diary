@@ -34,7 +34,7 @@ ext {
     springSecurity = '5.5.2'
     servletVersion = '4.0.1'
     javaxAnnotationVersion = '1.3.2'
-    jsonWebToken = '0.9.1'
+    jwtWebTokenVersion = '0.11.2'
     jakartaXmlVersion = '2.3.2'
     mailVersion =  '2.0.1'
     //JDBC
@@ -80,8 +80,12 @@ dependencies {
     implementation group: 'org.springframework.security', name: 'spring-security-config', version: springSecurity
     //Spring Security Web
     implementation group: 'org.springframework.security', name: 'spring-security-web', version: springSecurity
-    //JSON Web Token
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: jsonWebToken
+    //JSON Web Token jjwt-jackson
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: jwtWebTokenVersion
+    //JSON Web Token jjwt-impl
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: jwtWebTokenVersion
+    //JSON Web Token jjwt-api
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: jwtWebTokenVersion
     //Jakarta xml bind
     implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: jakartaXmlVersion
     //Jakarta Mail API

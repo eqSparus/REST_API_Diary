@@ -3,11 +3,10 @@ package ru.diary.controllers;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.form.UserForm;
+import ru.diary.configurations.security.jwt.JwtTokenProvider;
+import ru.diary.models.dto.UserDto;
 import ru.diary.services.data.AllInformationService;
 
 import java.util.Map;
@@ -23,21 +22,21 @@ public class UserDataController {
     static String USER = "user";
 
     AllInformationService informationService;
-    TokenCreator creator;
+    JwtTokenProvider creator;
 
     @Autowired
-    public UserDataController(AllInformationService informationService, TokenCreator creator) {
+    public UserDataController(AllInformationService informationService, JwtTokenProvider creator) {
         this.informationService = informationService;
         this.creator = creator;
     }
 
     @GetMapping(value = "/data", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(code = HttpStatus.OK)
     public Map<String, Object> getData(
             @RequestHeader("Authorization") String header
     ) {
 
-        var email = creator.getLogin(header);
+        var email = creator.getEmail(header);
+
         var user = informationService.findUser(email);
         var labels = informationService.findAllLabel(user.getId());
         var diaries = informationService.findAllDiary(user.getId());
@@ -45,7 +44,7 @@ public class UserDataController {
 
 
         return Map.of(
-                USER, new UserForm(user),
+                USER, new UserDto(user),
                 LABELS, labels,
                 DIARIES, diaries,
                 RECORDS, records

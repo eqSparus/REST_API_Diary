@@ -8,10 +8,10 @@ import ru.diary.models.Diary;
 import ru.diary.models.Label;
 import ru.diary.models.Record;
 import ru.diary.models.User;
-import ru.diary.repositories.DiaryDao;
-import ru.diary.repositories.LabelDao;
-import ru.diary.repositories.RecordDao;
-import ru.diary.repositories.UserDao;
+import ru.diary.repositories.IDiaryRepository;
+import ru.diary.repositories.ILabelRepository;
+import ru.diary.repositories.IRecordRepository;
+import ru.diary.repositories.IUserRepository;
 
 import java.util.List;
 
@@ -19,32 +19,35 @@ import java.util.List;
 @Service
 public class AllInformationService {
 
-    final LabelDao labelDao;
-    final DiaryDao diaryDao;
-    final UserDao userDao;
-    final RecordDao recordDao;
+    final ILabelRepository labelRepository;
+    final IDiaryRepository diaryRepository;
+    final IUserRepository userRepository;
+    final IRecordRepository recordRepository;
 
     @Autowired
-    public AllInformationService(LabelDao labelDao, DiaryDao diaryDao, UserDao userDao, RecordDao recordDao) {
-        this.labelDao = labelDao;
-        this.diaryDao = diaryDao;
-        this.userDao = userDao;
-        this.recordDao = recordDao;
+    public AllInformationService(ILabelRepository labelRepository,
+                                 IDiaryRepository diaryRepository,
+                                 IUserRepository userRepository,
+                                 IRecordRepository recordRepository) {
+        this.labelRepository = labelRepository;
+        this.diaryRepository = diaryRepository;
+        this.userRepository = userRepository;
+        this.recordRepository = recordRepository;
     }
 
     public List<Label> findAllLabel(Long userId) {
-        return labelDao.findAll(userId);
+        return labelRepository.findAll(userId);
     }
 
     public List<Diary> findAllDiary(Long userId) {
-        return diaryDao.findAll(userId);
+        return diaryRepository.findAll(userId);
     }
 
     public User findUser(String email) {
-        return userDao.findUserByEmail(email).orElseThrow(IllegalAccessError::new);
+        return userRepository.findUserByEmail(email).orElseThrow(IllegalArgumentException::new);
     }
 
     public List<Record> findAllRecord(Long userId) {
-        return recordDao.findAll(userId);
+        return recordRepository.findAll(userId);
     }
 }

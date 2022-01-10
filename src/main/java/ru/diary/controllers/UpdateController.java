@@ -3,12 +3,12 @@ package ru.diary.controllers;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.configurations.security.jwt.TokenCreator;
-import ru.diary.models.form.UserAuth;
-import ru.diary.models.form.UserForm;
+import ru.diary.configurations.security.jwt.JwtTokenProvider;
+import ru.diary.models.dto.UserAuth;
+import ru.diary.models.dto.UserDto;
+import ru.diary.services.auth.RestPasswordException;
 import ru.diary.services.auth.UpdateDataUser;
 
 import java.util.Map;
@@ -21,38 +21,31 @@ public class UpdateController {
 
     static String MESSAGE = "message";
     UpdateDataUser updateDataUser;
-    TokenCreator creator;
+    JwtTokenProvider creator;
 
     @Autowired
-    public UpdateController(UpdateDataUser updateDataUser, TokenCreator creator) {
+    public UpdateController(UpdateDataUser updateDataUser, JwtTokenProvider creator) {
         this.updateDataUser = updateDataUser;
         this.creator = creator;
     }
 
-    @PutMapping(path = "/password")
-    public ResponseEntity<Map<String, String>> updatePassword(
+    @PutMapping(path = "/password", params = {"password", "newPassword"},
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> updatePassword(
             @RequestHeader("Authorization") String header,
             @RequestParam("password") String password,
             @RequestParam("newPassword") String newPassword
-    ) {
+    ) throws RestPasswordException {
 
-        if (updateDataUser.updatePassword(creator.getLogin(header), password, newPassword)) {
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of(
-                    MESSAGE, "Пароль изменен"
-            ));
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                MESSAGE, "Не удалось изменить пароль"
-        ));
+        return Map.of(MESSAGE, updateDataUser.updatePassword(creator.getEmail(header), password, newPassword));
     }
 
     @PutMapping(path = "/username")
-    @ResponseStatus(code = HttpStatus.OK)
-    public UserForm updateName(
+    public UserDto updateName(
             @RequestHeader("Authorization") String header,
             @RequestBody UserAuth userAuth
     ) {
-        return updateDataUser.updateName(userAuth, creator.getLogin(header));
+        return updateDataUser.updateName(userAuth, creator.getEmail(header));
     }
 
 }

@@ -6,29 +6,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.diary.models.User;
-import ru.diary.models.form.UserAuth;
-import ru.diary.models.form.UserForm;
-import ru.diary.repositories.PersonalDataDao;
-import ru.diary.repositories.UserDao;
+import ru.diary.models.dto.UserAuth;
+import ru.diary.models.dto.UserDto;
+import ru.diary.repositories.IPersonalDataRepository;
+import ru.diary.repositories.IUserRepository;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class UpdateDataUser {
 
-    PersonalDataDao personalDataDao;
-    UserDao userDao;
+    IPersonalDataRepository personalDataDao;
+    IUserRepository userRepository;
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UpdateDataUser(PersonalDataDao personalDataDao, UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UpdateDataUser(IPersonalDataRepository personalDataDao,
+                          IUserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
         this.personalDataDao = personalDataDao;
-        this.userDao = userDao;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean updatePassword(String email, String password, String newPassword) {
+    public String updatePassword(String email, String password, String newPassword) throws RestPasswordException {
 
-        var user = userDao.findUserByEmail(email).orElseThrow(IllegalAccessError::new);
+        var user = userRepository.findUserByEmail(email).orElseThrow(IllegalAccessError::new);
 
         if (passwordEncoder.matches(password, user.getPassword())) {
             personalDataDao.updatePassword(
@@ -37,14 +39,15 @@ public class UpdateDataUser {
                             .password(passwordEncoder.encode(newPassword))
                             .build()
             );
-            return true;
+            return "Пароль изменен";
+        }else {
+            throw new RestPasswordException();
         }
-        return false;
     }
 
-    public UserForm updateName(UserAuth userAuth, String email) {
+    public UserDto updateName(UserAuth userAuth, String email) {
         personalDataDao.updateName(User.builder().username(userAuth.getUsername())
                 .email(email).build());
-        return new UserForm(userDao.findUserByEmail(email).orElseThrow(IllegalAccessError::new));
+        return new UserDto(userRepository.findUserByEmail(email).orElseThrow(IllegalAccessError::new));
     }
 }

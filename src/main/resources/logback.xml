@@ -1,39 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" debug="false">
 
-    <appender name="print_console" class="ch.qos.logback.core.ConsoleAppender">
+
+    <appender name="console_error"
+              class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%msg%n</pattern>
+            <pattern>
+                %red(%d{HH:mm:ss.SSS}[thread] %-5level %logger{46} - %msg%n)
+            </pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
     </appender>
 
-    <appender name="test_console" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="console_info" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>[%thread] %-5level %msg%n</pattern>
+            <pattern>%green([%thread] %-5level) %cyan(%msg%n)</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="console_debug"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %yellow(%d{HH:mm:ss.SSS}) %green([thread] %-5level) %cyan(%logger{46}) - %blue(%msg%n)
+            </pattern>
         </encoder>
     </appender>
 
     <appender name="file_error"
               class="ch.qos.logback.core.FileAppender">
-        <file>src/main/resources/logback.log</file>
+        <file>src/main/resources/log/logback_error.log</file>
         <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %d{HH:mm:ss.SSS}[thread] %-5level %logger{46} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="file_debug"
+              class="ch.qos.logback.core.FileAppender">
+        <file>src/main/resources/log/logback.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
             <pattern>
                 %d{HH:mm:ss.SSS} [thread] %-5level %logger{46} - %msg%n
             </pattern>
         </encoder>
     </appender>
 
-    <logger name="print" level="info" additivity="false">
-        <appender-ref ref="print_console"/>
-    </logger>
 
-    <logger name="test" level="debug" additivity="false">
-        <appender-ref ref="test_console"/>
+    <logger name="ru.diary" level="info" additivity="false">
+        <appender-ref ref="console_info"/>
+        <appender-ref ref="console_error"/>
+        <appender-ref ref="file_error"/>
     </logger>
 
     <root level="error">
-        <appender-ref ref="test_console" />
+        <appender-ref ref="console_error"/>
         <appender-ref ref="file_error"/>
     </root>
 </configuration>

@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.diary.mail.MailingLetters;
-import ru.diary.repositories.UserDao;
-import ru.diary.services.EmailService;
+import ru.diary.repositories.IUserRepository;
+import ru.diary.services.IEmailService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class EmailAuthenticationService implements EmailService {
+public class EmailAuthenticationService implements IEmailService {
 
-    UserDao dao;
+    IUserRepository userRepository;
     MailingLetters mailingLetters;
 
     @Autowired
-    public EmailAuthenticationService(UserDao dao, MailingLetters mailingLetters) {
-        this.dao = dao;
+    public EmailAuthenticationService(IUserRepository userRepository, MailingLetters mailingLetters) {
+        this.userRepository = userRepository;
         this.mailingLetters = mailingLetters;
     }
 
@@ -50,6 +50,6 @@ public class EmailAuthenticationService implements EmailService {
 
     @Override
     public void updateData(String email) {
-        dao.updateStatusActive(email);
+        userRepository.updateStatus(email);
     }
 }

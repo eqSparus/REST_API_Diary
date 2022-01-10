@@ -5,54 +5,54 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.diary.models.Label;
-import ru.diary.models.form.LabelForm;
-import ru.diary.repositories.LabelDao;
-import ru.diary.repositories.UserDao;
-import ru.diary.services.DataService;
+import ru.diary.models.dto.LabelDto;
+import ru.diary.repositories.ILabelRepository;
+import ru.diary.repositories.IUserRepository;
+import ru.diary.services.IDataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class LabelService implements DataService<LabelForm, Label> {
+public class LabelService implements IDataService<LabelDto, Label> {
 
-    LabelDao labelDao;
-    UserDao userDao;
+    ILabelRepository labelRepository;
+    IUserRepository userRepository;
 
     @Autowired
-    public LabelService(LabelDao labelDao, UserDao userDao) {
-        this.labelDao = labelDao;
-        this.userDao = userDao;
+    public LabelService(ILabelRepository labelRepository, IUserRepository userRepository) {
+        this.labelRepository = labelRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Label create(LabelForm labelForm, String login) {
+    public Label create(LabelDto labelDto, String login) {
 
-        var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
+        var user = userRepository.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
 
         var label = Label.builder()
-                .title(labelForm.getTitle())
-                .color(labelForm.getColor())
+                .title(labelDto.getTitle())
+                .color(labelDto.getColor())
                 .userId(user.getId())
                 .build();
 
 
-        return labelDao.create(label).orElseThrow(IllegalAccessError::new);
+        return labelRepository.create(label).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
-    public Label update(LabelForm labelForm, Long id) {
+    public Label update(LabelDto labelDto, Long id) {
 
-        return labelDao.update(
+        return labelRepository.update(
                 Label.builder()
-                        .title(labelForm.getTitle())
-                        .color(labelForm.getColor())
-                        .build(),
-                id
+                        .id(id)
+                        .title(labelDto.getTitle())
+                        .color(labelDto.getColor())
+                        .build()
         ).orElseThrow(IllegalAccessError::new);
 
     }
 
     @Override
     public void delete(Long id) {
-        labelDao.delete(id);
+        labelRepository.delete(id);
     }
 }

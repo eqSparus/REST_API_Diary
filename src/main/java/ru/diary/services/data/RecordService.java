@@ -5,53 +5,53 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.diary.models.Record;
-import ru.diary.models.form.RecordForm;
-import ru.diary.repositories.RecordDao;
-import ru.diary.repositories.UserDao;
-import ru.diary.services.DataService;
+import ru.diary.models.dto.RecordDto;
+import ru.diary.repositories.IRecordRepository;
+import ru.diary.repositories.IUserRepository;
+import ru.diary.services.IDataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class RecordService implements DataService<RecordForm, Record> {
+public class RecordService implements IDataService<RecordDto, Record> {
 
-    RecordDao recordDao;
-    UserDao userDao;
+    IRecordRepository recordRepository;
+    IUserRepository userRepository;
 
     @Autowired
-    public RecordService(RecordDao recordDao, UserDao userDao) {
-        this.recordDao = recordDao;
-        this.userDao = userDao;
+    public RecordService(IRecordRepository recordRepository, IUserRepository userRepository) {
+        this.recordRepository = recordRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Record create(RecordForm recordForm, String login) {
+    public Record create(RecordDto recordDto, String login) {
 
-        var user = userDao.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
+        var user = userRepository.findUserByEmail(login).orElseThrow(IllegalAccessError::new);
 
-        var record = Record.builder()
-                .textBody(recordForm.getTextBody())
-                .dateCreate(recordForm.getDateCreate())
-                .isBookmark(recordForm.getBookmark())
-                .diaryId(recordForm.getDiaryId())
-                .labelId(recordForm.getLabelId())
+        var recordNew = Record.builder()
+                .textBody(recordDto.getTextBody())
+                .dateCreate(recordDto.getDateCreate())
+                .isBookmark(recordDto.getBookmark())
+                .diaryId(recordDto.getDiaryId())
+                .labelId(recordDto.getLabelId())
                 .userId(user.getId())
                 .build();
 
-        return recordDao.create(record).orElseThrow(IllegalAccessError::new);
+        return recordRepository.create(recordNew).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
-    public Record update(RecordForm recordForm, Long id) {
-        return recordDao.update(
+    public Record update(RecordDto recordDto, Long id) {
+        return recordRepository.update(
                 Record.builder()
-                        .isBookmark(recordForm.getBookmark())
-                        .build(),
-                id
+                        .id(id)
+                        .isBookmark(recordDto.getBookmark())
+                        .build()
         ).orElseThrow(IllegalAccessError::new);
     }
 
     @Override
     public void delete(Long id) {
-        recordDao.delete(id);
+        recordRepository.delete(id);
     }
 }

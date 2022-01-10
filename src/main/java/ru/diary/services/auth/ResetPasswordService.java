@@ -6,38 +6,40 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.diary.configurations.security.jwt.TokenCreator;
+import ru.diary.configurations.security.jwt.JwtTokenProvider;
 import ru.diary.mail.MailingLetters;
 import ru.diary.models.Status;
-import ru.diary.repositories.UserDao;
+import ru.diary.repositories.IUserRepository;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class ResetPasswordService {
 
-    private static final long TIME_RESET = 300L;
-    UserDao userDao;
+    private static final long TIME_RESET = 300000L;
+    IUserRepository userRepository;
     MailingLetters mailingLetters;
-    TokenCreator creator;
+    JwtTokenProvider creator;
 
     @Autowired
-    public ResetPasswordService(UserDao userDao, MailingLetters mailingLetters, TokenCreator creator) {
-        this.userDao = userDao;
+    public ResetPasswordService(IUserRepository userRepository,
+                                MailingLetters mailingLetters,
+                                JwtTokenProvider creator) {
+        this.userRepository = userRepository;
         this.mailingLetters = mailingLetters;
         this.creator = creator;
     }
 
-    public boolean resetPassword(String email) {
-        var user = userDao.findUserByEmail(email);
+    public String resetPassword(String email) throws RestPasswordEmailException {
+        var user = userRepository.findUserByEmail(email);
 
         if (user.isPresent() && user.get().getStatus().equals(Status.ACTIVE)) {
-            recoverPasswordEmail(email);
-            return true;
+            new Thread(() -> recoverPasswordEmail(email)).start();
+            return "Проверьте свою почту";
+        }else {
+            throw new RestPasswordEmailException();
         }
-        return false;
     }
 
-    //TODO Изменить время setTime()
     private void recoverPasswordEmail(String email) {
 
         creator.setTime(TIME_RESET);

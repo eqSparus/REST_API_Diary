@@ -6,21 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.diary.models.User;
-import ru.diary.models.form.UserAuth;
-import ru.diary.repositories.PersonalDataDao;
-import ru.diary.services.DataAuthService;
+import ru.diary.models.dto.UserAuth;
+import ru.diary.repositories.IPersonalDataRepository;
+import ru.diary.services.IDataAuthService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class PersonalDataUserService implements DataAuthService {
+public class PersonalDataUserService implements IDataAuthService {
 
-    PersonalDataDao dataDao;
+    IPersonalDataRepository personalDataRepository;
     PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public PersonalDataUserService(PersonalDataDao dataDao, PasswordEncoder passwordEncoder) {
-        this.dataDao = dataDao;
+    public PersonalDataUserService(IPersonalDataRepository personalDataRepository, PasswordEncoder passwordEncoder) {
+        this.personalDataRepository = personalDataRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -32,7 +32,7 @@ public class PersonalDataUserService implements DataAuthService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
 
-        dataDao.updatePassword(newDataUsed);
+        personalDataRepository.updatePassword(newDataUsed);
 
     }
 }

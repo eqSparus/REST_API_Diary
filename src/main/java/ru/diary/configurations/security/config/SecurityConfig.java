@@ -8,15 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import ru.diary.models.Role;
+import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.Filter;
 
@@ -28,20 +28,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     Environment environment;
     Filter filter;
-    Filter encodingFilter;
-    AuthenticationProvider provider;
 
 
     @Autowired
     public SecurityConfig(
             Environment environment,
-            @Qualifier("tokenAuthenticationFilter") Filter filter,
-            @Qualifier("encodingFilterConfig") Filter encodingFilter,
-            AuthenticationProvider provider) {
+            @Qualifier("jwtTokenAuthenticationFilter") GenericFilterBean filter) {
         this.environment = environment;
         this.filter = filter;
-        this.encodingFilter = encodingFilter;
-        this.provider = provider;
     }
 
     @Override
@@ -57,15 +51,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         var urlUpdate = environment.getProperty("path.update");
 
         http
-                .addFilterBefore(encodingFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(filter, BasicAuthenticationFilter.class)
-                .authenticationProvider(provider)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers(urlUpdatePass).authenticated()
-                .antMatchers(urlCrud, urlData, urlUpdate).hasRole(Role.USER.name())
+                .antMatchers(urlCrud, urlData, urlUpdate).authenticated()
                 .antMatchers(urlLogin, urlRegistration, urlConfirm, urlResetPass).permitAll();
 
         http.csrf().disable();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean
