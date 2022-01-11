@@ -1,4 +1,4 @@
-package ru.diary.controllers;
+package ru.diary.rest;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +12,12 @@ import ru.diary.models.dto.UserAuth;
 import ru.diary.services.IDataAuthService;
 import ru.diary.services.IEmailService;
 import ru.diary.services.auth.ResetPasswordService;
-import ru.diary.services.auth.RestPasswordEmailException;
+import ru.diary.services.auth.exeption.RestPasswordEmailException;
 
 import java.net.URI;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST, maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST,RequestMethod.GET}, maxAge = 3600)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 public class EmailController {

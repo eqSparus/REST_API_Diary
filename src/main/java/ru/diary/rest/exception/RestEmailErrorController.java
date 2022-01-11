@@ -1,11 +1,12 @@
-package ru.diary.controllers;
+package ru.diary.rest.exception;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.services.auth.RestPasswordEmailException;
-import ru.diary.services.auth.RestPasswordException;
+import ru.diary.rest.EmailController;
+import ru.diary.services.auth.exeption.RestPasswordEmailException;
+import ru.diary.services.auth.exeption.RestPasswordException;
 
 import java.util.Map;
 

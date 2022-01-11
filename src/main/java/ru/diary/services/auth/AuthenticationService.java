@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.diary.configurations.security.jwt.JwtTokenProvider;
 import ru.diary.models.Role;
 import ru.diary.models.Status;
@@ -17,9 +18,12 @@ import ru.diary.models.dto.UserAuth;
 import ru.diary.repositories.IUserRepository;
 import ru.diary.services.IEmailService;
 import ru.diary.services.IAuthenticationService;
+import ru.diary.services.auth.exeption.AuthException;
+import ru.diary.services.auth.exeption.RegistrationErrorLoginExistsException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Transactional
 public class AuthenticationService implements IAuthenticationService {
 
     IEmailService emailService;
@@ -56,7 +60,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public String registrationUser(UserAuth user) throws RegistrationErrorLoginExists {
+    public String registrationUser(UserAuth user) throws RegistrationErrorLoginExistsException {
         var userExit = userRepository.findUserByEmail(user.getEmail());
 
 
@@ -74,7 +78,7 @@ public class AuthenticationService implements IAuthenticationService {
             userRepository.create(newUser);
             return "Пользователь создан";
         } else {
-            throw new RegistrationErrorLoginExists();
+            throw new RegistrationErrorLoginExistsException();
         }
     }
 }

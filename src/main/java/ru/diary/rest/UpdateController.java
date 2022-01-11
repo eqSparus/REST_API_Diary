@@ -1,4 +1,4 @@
-package ru.diary.controllers;
+package ru.diary.rest;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.JwtTokenProvider;
 import ru.diary.models.dto.UserAuth;
 import ru.diary.models.dto.UserDto;
-import ru.diary.services.auth.RestPasswordException;
+import ru.diary.services.auth.exeption.RestPasswordException;
 import ru.diary.services.auth.UpdateDataUser;
 
 import java.util.Map;

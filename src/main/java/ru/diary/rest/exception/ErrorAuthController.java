@@ -1,11 +1,12 @@
-package ru.diary.controllers.auth;
+package ru.diary.rest.exception;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.diary.services.auth.AuthException;
-import ru.diary.services.auth.RegistrationErrorLoginExists;
+import ru.diary.rest.AuthenticationController;
+import ru.diary.services.auth.exeption.AuthException;
+import ru.diary.services.auth.exeption.RegistrationErrorLoginExistsException;
 
 import java.util.Map;
 
@@ -25,10 +26,10 @@ public class ErrorAuthController {
     }
 
 
-    @ExceptionHandler(value = RegistrationErrorLoginExists.class)
+    @ExceptionHandler(value = RegistrationErrorLoginExistsException.class)
     @ResponseStatus(code = HttpStatus.CONFLICT)
     @ResponseBody
-    public Map<String, String> messageErrorRegistration(RegistrationErrorLoginExists e){
+    public Map<String, String> messageErrorRegistration(RegistrationErrorLoginExistsException e){
 
         return Map.of(MESSAGE, "Такой логин уже существует");
     }

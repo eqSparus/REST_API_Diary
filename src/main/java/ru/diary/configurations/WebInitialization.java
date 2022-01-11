@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public class WebInitialization extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{DatabaseConfig.class, SecurityConfig.class, ModelAndMailConfig.class};
+        return new Class[]{AppDatabaseConfig.class, SecurityConfig.class, ModelAndMailConfig.class};
     }
 
     @Override

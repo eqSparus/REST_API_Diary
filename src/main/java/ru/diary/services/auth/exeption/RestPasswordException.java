@@ -1,4 +1,4 @@
-package ru.diary.services.auth;
+package ru.diary.services.auth.exeption;
 
 public class RestPasswordException extends Exception{
 

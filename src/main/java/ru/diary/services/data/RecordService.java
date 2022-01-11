@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.diary.models.Record;
 import ru.diary.models.dto.RecordDto;
 import ru.diary.repositories.IRecordRepository;
@@ -12,6 +13,7 @@ import ru.diary.services.IDataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Transactional
 public class RecordService implements IDataService<RecordDto, Record> {
 
     IRecordRepository recordRepository;

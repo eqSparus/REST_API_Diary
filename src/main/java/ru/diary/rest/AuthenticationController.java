@@ -1,4 +1,4 @@
-package ru.diary.controllers.auth;
+package ru.diary.rest;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.models.dto.UserAuth;
 import ru.diary.services.IAuthenticationService;
-import ru.diary.services.auth.AuthException;
-import ru.diary.services.auth.RegistrationErrorLoginExists;
+import ru.diary.services.auth.exeption.AuthException;
+import ru.diary.services.auth.exeption.RegistrationErrorLoginExistsException;
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class AuthenticationController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public Map<String, String> registrationUser(
             @RequestBody UserAuth user
-    ) throws RegistrationErrorLoginExists {
+    ) throws RegistrationErrorLoginExistsException {
         return Map.of(MESSAGE, authenticationService.registrationUser(user));
     }
 }

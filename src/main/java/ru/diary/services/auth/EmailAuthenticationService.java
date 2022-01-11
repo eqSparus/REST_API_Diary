@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.diary.mail.MailingLetters;
 import ru.diary.repositories.IUserRepository;
@@ -12,6 +13,7 @@ import ru.diary.services.IEmailService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Transactional
 public class EmailAuthenticationService implements IEmailService {
 
     IUserRepository userRepository;

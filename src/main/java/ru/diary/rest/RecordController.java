@@ -1,4 +1,4 @@
-package ru.diary.controllers;
+package ru.diary.rest;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

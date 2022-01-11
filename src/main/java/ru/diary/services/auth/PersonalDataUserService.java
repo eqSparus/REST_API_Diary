@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.diary.models.User;
 import ru.diary.models.dto.UserAuth;
 import ru.diary.repositories.IPersonalDataRepository;
@@ -12,6 +13,7 @@ import ru.diary.services.IDataAuthService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Transactional
 public class PersonalDataUserService implements IDataAuthService {
 
     IPersonalDataRepository personalDataRepository;

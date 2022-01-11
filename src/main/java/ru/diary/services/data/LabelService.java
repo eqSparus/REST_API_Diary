@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.diary.models.Label;
 import ru.diary.models.dto.LabelDto;
 import ru.diary.repositories.ILabelRepository;
@@ -12,6 +13,7 @@ import ru.diary.services.IDataService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
+@Transactional
 public class LabelService implements IDataService<LabelDto, Label> {
 
     ILabelRepository labelRepository;

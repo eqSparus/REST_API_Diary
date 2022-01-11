@@ -1,4 +1,4 @@
-package ru.diary.controllers;
+package ru.diary.rest;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.diary.configurations.security.jwt.JwtTokenProvider;
-import ru.diary.models.Diary;
-import ru.diary.models.dto.DiaryDto;
+import ru.diary.models.Label;
+import ru.diary.models.dto.LabelDto;
 import ru.diary.services.IDataService;
 
 @CrossOrigin(origins = "http://localhost:3000",
@@ -17,42 +17,42 @@ import ru.diary.services.IDataService;
         maxAge = 3600)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
-@RequestMapping(path = "/crud/diary")
-public class DiaryController {
+@RequestMapping(path = "/crud/label")
+public class LabelController {
 
-    IDataService<DiaryDto, Diary> diaryService;
+    IDataService<LabelDto, Label> labelService;
     JwtTokenProvider creator;
 
     @Autowired
-    public DiaryController(IDataService<DiaryDto, Diary> diaryService, JwtTokenProvider creator) {
-        this.diaryService = diaryService;
+    public LabelController(IDataService<LabelDto, Label> labelService, JwtTokenProvider creator) {
+        this.labelService = labelService;
         this.creator = creator;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Diary createDiary(
+    public Label createLabel(
             @RequestHeader("Authorization") String header,
-            @RequestBody DiaryDto diaryDto
+            @RequestBody LabelDto labelDto
     ) {
-        return diaryService.create(diaryDto, creator.getEmail(header));
+        return labelService.create(labelDto, creator.getEmail(header));
     }
 
     @DeleteMapping(params = "id")
     public ResponseEntity<?> deleteDiary(
             @RequestParam("id") Long id
     ) {
-        diaryService.delete(id);
+        labelService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(params = "id", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Diary updateDiary(
+    @PutMapping(params = "id", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Label updateDiary(
             @RequestParam("id") Long id,
-            @RequestBody DiaryDto diaryDto
+            @RequestBody LabelDto labelDto
     ) {
-        return diaryService.update(diaryDto, id);
+        return labelService.update(labelDto, id);
     }
 }

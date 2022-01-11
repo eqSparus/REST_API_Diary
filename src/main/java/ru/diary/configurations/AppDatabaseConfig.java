@@ -10,6 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Objects;
@@ -19,12 +22,13 @@ import java.util.Objects;
 @PropertySource(value = "classpath:db_jdbc.properties", encoding = "UTF-8")
 @PropertySource(value = "classpath:sql.properties",encoding = "UTF-8")
 @ComponentScan(basePackages = {"ru.diary.services", "ru.diary.repositories"})
-public class DatabaseConfig {
+@EnableTransactionManagement
+public class AppDatabaseConfig {
 
     Environment environment;
 
     @Autowired
-    public DatabaseConfig(Environment environment) {
+    public AppDatabaseConfig(Environment environment) {
         this.environment = environment;
     }
 
@@ -44,5 +48,12 @@ public class DatabaseConfig {
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
     }
+
+
+    @Bean
+    public PlatformTransactionManager platformTransactionManager(){
+        return new JdbcTransactionManager(dataSource());
+    }
+
 
 }
