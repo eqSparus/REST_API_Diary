@@ -24,12 +24,13 @@ repositories {
 }
 
 ext {
-    //Test
     junitVersion = '5.8.0'
-    //Different
+
+
     lombockVersion = '1.18.20'
     jacksonVersion = '2.12.5'
-    //Web
+
+
     springVersion = '5.3.9'
     springSecurity = '5.5.2'
     servletVersion = '4.0.1'
@@ -37,31 +38,29 @@ ext {
     jwtWebTokenVersion = '0.11.2'
     jakartaXmlVersion = '2.3.2'
     mailVersion =  '2.0.1'
-    //JDBC
     postgreSQLVersion = '42.2.23'
-    //Logging
+
+
     slf4jVersion = '1.7.32'
     logbackVersion = '1.2.6'
 }
 
 dependencies {
-    //Test stack start
+    //Test stack
     //JUnit tests
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
-    //Test stack end
 
 
-    //Different libraries start
+    //Different libraries
     //Lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombockVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombockVersion
     //Jackson databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
-    //Different libraries end
 
 
-    //Web stack start
+    //Web stack
     //Spring MVC
     implementation group: 'org.springframework', name: 'spring-webmvc', version: springVersion
     //Spring Web
@@ -90,16 +89,14 @@ dependencies {
     implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: jakartaXmlVersion
     //Jakarta Mail API
     implementation group: 'com.sun.mail', name: 'jakarta.mail', version: mailVersion
-    //Web stack end
 
 
-    //Logging start
+    //Logging
     //SLF4J
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
     //Logback
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
-    //Logging end
 }
 
 test {
