@@ -40,7 +40,7 @@ public class DiaryController {
     }
 
     @DeleteMapping(params = "id")
-    public ResponseEntity<?> deleteDiary(
+    public ResponseEntity<HttpStatus> deleteDiary(
             @RequestParam("id") Long id
     ) {
         diaryService.delete(id);

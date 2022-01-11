@@ -40,7 +40,7 @@ public class LabelController {
     }
 
     @DeleteMapping(params = "id")
-    public ResponseEntity<?> deleteDiary(
+    public ResponseEntity<HttpStatus> deleteDiary(
             @RequestParam("id") Long id
     ) {
         labelService.delete(id);

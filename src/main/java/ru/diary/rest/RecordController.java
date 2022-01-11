@@ -45,7 +45,7 @@ public class RecordController {
     }
 
     @DeleteMapping(params = "id")
-    public ResponseEntity<?> deleteRecord(
+    public ResponseEntity<HttpStatus> deleteRecord(
             @RequestParam("id") Long id
     ) {
         recordService.delete(id);
