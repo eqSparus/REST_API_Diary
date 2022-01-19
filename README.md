@@ -35,7 +35,6 @@ __Запросы__
 ---
 <h1 align="center">In English</h1>
 
-# REST_API_DIARY
 
 This REST API project is developed in Java and is a learning project.
 
