@@ -6,7 +6,7 @@
 
 Это API приложения "Личный дневник" который позволяется взаимодействовать с БД
 
-<b>Запросы</b>
+__Запросы__
 
 - регистрация аккаунта;
 - авторищация аккаунта;
@@ -28,8 +28,11 @@
 - Spring JDBC
 - JsonWebToken
 - Jakarta Mail
+- Tomcat
+- Gradle
+- PostgreSQL
 
-<br>
+---
 <h1 align="center">In English</h1>
 
 # REST_API_DIARY
@@ -40,7 +43,7 @@ This REST API project is developed in Java and is a learning project.
 
 This is the API of the "Personal Diary" application that allows you to interact with the database
 
-<b>Application Features</b>
+__Application Features__
 
 - account registration;
 - account authorization;
@@ -62,3 +65,6 @@ This is the API of the "Personal Diary" application that allows you to interact 
 - Spring JDBC
 - JsonWebToken
 - Jakarta Mail
+- Tomcat
+- Gradle
+- PostgreSQL
