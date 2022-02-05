@@ -1,6 +1,6 @@
 package ru.diary.services.auth.exeption;
 
-public class RestPasswordEmailException extends Exception{
+public class RestPasswordEmailException extends Exception {
 
     public RestPasswordEmailException() {
     }

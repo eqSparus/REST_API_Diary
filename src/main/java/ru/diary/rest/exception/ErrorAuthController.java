@@ -21,8 +21,7 @@ public class ErrorAuthController {
     @ResponseStatus(code = HttpStatus.CONFLICT)
     @ResponseBody
     public Map<String, String> messageErrorLoginAuth(AuthException e){
-
-        return Map.of(MESSAGE, "Неправильный логин или пароль");
+        return Map.of(MESSAGE, "Неправильный адрес или пароль");
     }
 
 
@@ -31,7 +30,7 @@ public class ErrorAuthController {
     @ResponseBody
     public Map<String, String> messageErrorRegistration(RegistrationErrorLoginExistsException e){
 
-        return Map.of(MESSAGE, "Такой логин уже существует");
+        return Map.of(MESSAGE, "Такой адрес уже существует");
     }
 
 }

@@ -1,6 +1,6 @@
 package ru.diary.services.auth.exeption;
 
-public class RegistrationErrorLoginExistsException extends Exception{
+public class RegistrationErrorLoginExistsException extends Exception {
 
     public RegistrationErrorLoginExistsException() {
     }
